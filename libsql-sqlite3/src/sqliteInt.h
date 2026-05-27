@@ -1615,7 +1615,14 @@ struct FuncDefHash {
 };
 #define SQLITE_FUNC_HASH(C,L) (((C)+(L))%SQLITE_FUNC_HASH_SZ)
 
-#if defined(SQLITE_USER_AUTHENTICATION)
+/* The #warning directive below is a hard error under MSVC's default
+** (traditional) C preprocessor (error C1021), which breaks Windows builds.
+** Keep the deprecation notice for compilers that accept #warning and skip it
+** on MSVC. This is purely a compile-time diagnostic; the extension itself is
+** still controlled by SQLITE_USER_AUTHENTICATION below. Upstream SQLite
+** removed this extension entirely in 3.48.0 (commit bc4df6079c), so this
+** local patch becomes moot once the bundled SQLite is updated past 3.47.0. */
+#if defined(SQLITE_USER_AUTHENTICATION) && !defined(_MSC_VER)
 # warning  "The SQLITE_USER_AUTHENTICATION extension is deprecated. \
  See ext/userauth/user-auth.txt for details."
 #endif
